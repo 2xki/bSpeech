@@ -38,7 +38,7 @@ public class MainActivity extends Activity {
             "A mouse consists of about 100 millions of Neurons",
             "Our brain consists of about 100 Billions of Neurons",
             "Are you sure? We started with Memory sizes of about 300 Bytes in the 1960s. Today 100 Gigabytes is a problem for you?",
-            "i did not come personally. I am dead for one year now. But my students scaned my brain and transferred it into this computer. Now i can live forever! \n forever! \n forever!"
+            "i did not come personally. I am dead for one year now. But my students scanned my brain and transferred it into this computer. Now i can live forever! \n forever! \n forever!"
     };
 
 
