@@ -133,7 +133,73 @@ public class MainActivity extends Activity {
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     txtSpeechInput.setText(result.get(0));
 
-                    tts.speak(result.get(0), TextToSpeech.QUEUE_FLUSH, null);
+                    switch(result.get(0).toString().toLowerCase()) {
+                        case "hello professor how are you":
+                            tts.speak("Fine, thank you", TextToSpeech.QUEUE_FLUSH, null);
+                            break;
+                        case "can you tell us something about your research on brains":
+                            tts.speak("Of course\n" +
+                                    "We started controlling the\n" +
+                                    "brain of a dog, using eye\n" +
+                                    "contact and guestures", TextToSpeech.QUEUE_FLUSH, null);
+                            break;
+                        case "how interesting":
+                            tts.speak("it took a while to manipulate\n" +
+                                    "the dog, but then we won", TextToSpeech.QUEUE_FLUSH, null);
+                            break;
+                        case "what was next":
+                            tts.speak("The next step was acutally\n" +
+                                    "scanning the brain of a worm\n" +
+                                    "and transfer this map into a\n" +
+                                    "computer", TextToSpeech.QUEUE_FLUSH, null);
+                            break;
+                        case "you are kidding":
+                            tts.speak("Not at all! Look at our worm we just connected the\n" +
+                                    "computer with sensors, so the worm can see and eat", TextToSpeech.QUEUE_FLUSH, null);
+                            break;
+                        case "so what is the program like":
+                            tts.speak("There is no program. What\n" +
+                                    "you see IS the worm. We did\n" +
+                                    "not write a program. The worm\n" +
+                                    "acts like his own brain tells\n" +
+                                    "him.", TextToSpeech.QUEUE_FLUSH, null);
+                            break;
+                        case "so the worm eats all the time":
+                            tts.speak("Only when he is hungry, we do\n" +
+                                    "not know before. We feed him\n" +
+                                    "with the balls, but he eats just\n" +
+                                    "when he likes.", TextToSpeech.QUEUE_FLUSH, null);
+                            break;
+                        case "that sounds scary":
+                            tts.speak("A worm consists of 302\n" +
+                                    "neurons", TextToSpeech.QUEUE_FLUSH, null);
+                            break;
+                        case "what about a mouse":
+                            tts.speak("A mouse consists of about 100 millions of Neurons", TextToSpeech.QUEUE_FLUSH, null);
+                            break;
+                        case "and what about a human brain":
+                            tts.speak("Our brain consists of about\n" +
+                                    "100 Billions of Neurons", TextToSpeech.QUEUE_FLUSH, null);
+                            break;
+                        case "so this would be too much for a computer":
+                            tts.speak("Are you sure?\n" +
+                                    "We started with Memory sizes\n" +
+                                    "of about 300 Bytes in the\n" +
+                                    "1960s\n" +
+                                    "Today – 100 Gigabytes is\n" +
+                                    "problem for you?", TextToSpeech.QUEUE_FLUSH, null);
+                            break;
+                        case "thank your professor for comming":
+                            tts.speak("i did not come personally. I am\n" +
+                                    "dead for one year now. But my\n" +
+                                    "students scaned my brain and\n" +
+                                    "transferred it into this\n" +
+                                    "computer.\n" +
+                                    "Now i can live forever!", TextToSpeech.QUEUE_FLUSH, null);
+                            break;
+                        default:
+                            tts.speak(result.get(0), TextToSpeech.QUEUE_FLUSH, null);
+                    }
                 }
                 break;
             }
