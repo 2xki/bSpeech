@@ -1,24 +1,9 @@
 package com.example.bspeech;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Set;
-import java.util.UUID;
-
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
@@ -29,19 +14,33 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Locale;
+
 public class MainActivity extends Activity {
 
     private TextView txtSpeechInput;
     private ImageButton btnSpeak;
     private ListView lstPairedDevices;
     private TextToSpeech tts;
-    /*
-    private String device_address = "";
-    private String device_name = "";
 
-    private BluetoothAdapter btAdapter = null;
-    private Set<BluetoothDevice> pairedDevices;
-    */
+    private String[] questions = {"hello professor how are you", "can you tell us something about your research on brains", "how interesting", "what is next", "are you kidding", "so what is the program like", "so the worm eats all the time", "that sounds scary", "what about a mouse", "and what about a human brain", "so this would be too much for a computer", "thank you professor for coming"};
+    private String[] patterns = {"hello professor( how are you)?", "research", "interesting", "what( is| was) next", "(are you )?kidding", "so what is the program like", "all the time", "that sounds scary", "mouse", "human brain", "computer", "thank you professor"};
+    private String[] answers = {
+            "Fine, thank you",
+            "Of course We started controlling the brain of a dog, using eye contact and gestures",
+            "it took a while to manipulate the dog",
+            "The next step was actually scanning the brain of a worm and transfer this map into a computer",
+            "Not at all! Look at our worm we just connected the computer with sensors, so the worm can move and eat",
+            "There is no program. What you see is the worm. The worm acts like a real one would.",
+            "Only when he is hungry. We feed him with the balls, but he eats just when he likes.",
+            "A worm consists of 302 neurons",
+            "A mouse consists of about 100 millions of Neurons",
+            "Our brain consists of about 100 Billions of Neurons",
+            "Are you sure? We started with Memory sizes of about 300 Bytes in the 1960s. Today 100 Gigabytes is a problem for you?",
+            "i did not come personally. I am dead for one year now. But my students scaned my brain and transferred it into this computer. Now i can live forever! \n forever! \n forever!"
+    };
+
 
     private final int REQ_CODE_SPEECH_INPUT = 100;
 
@@ -65,37 +64,16 @@ public class MainActivity extends Activity {
             }
         });
 
-        /*btAdapter = BluetoothAdapter.getDefaultAdapter();
-        if(btAdapter == null)
-        {
-            //Show a mensag. that thedevice has no bluetooth adapter
-            Toast.makeText(getApplicationContext(), "Bluetooth Device Not Available", Toast.LENGTH_LONG).show();
-            //finish apk
-            finish();
-        }
-        else
-        {
-            if (btAdapter.isEnabled())
-            { }
-            else
-            {
-                //Ask to the user turn the bluetooth on
-                Intent turnBTon = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(turnBTon,1);
-            }
-        }*/
-
         btnSpeak.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                //if(device_address != ""){
-                    promptSpeechInput();
-                //}else{
-                //    listPairedDevices();
-                //}
+                promptSpeechInput();
             }
         });
+        final ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1, questions);
+        lstPairedDevices.setAdapter(adapter);
+        lstPairedDevices.setOnItemClickListener(myListClickListener);
 
     }
 
@@ -133,73 +111,12 @@ public class MainActivity extends Activity {
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     txtSpeechInput.setText(result.get(0));
 
-                    switch(result.get(0).toString().toLowerCase()) {
-                        case "hello professor how are you":
-                            tts.speak("Fine, thank you", TextToSpeech.QUEUE_FLUSH, null);
-                            break;
-                        case "can you tell us something about your research on brains":
-                            tts.speak("Of course\n" +
-                                    "We started controlling the\n" +
-                                    "brain of a dog, using eye\n" +
-                                    "contact and guestures", TextToSpeech.QUEUE_FLUSH, null);
-                            break;
-                        case "how interesting":
-                            tts.speak("it took a while to manipulate\n" +
-                                    "the dog, but then we won", TextToSpeech.QUEUE_FLUSH, null);
-                            break;
-                        case "what was next":
-                            tts.speak("The next step was acutally\n" +
-                                    "scanning the brain of a worm\n" +
-                                    "and transfer this map into a\n" +
-                                    "computer", TextToSpeech.QUEUE_FLUSH, null);
-                            break;
-                        case "you are kidding":
-                            tts.speak("Not at all! Look at our worm we just connected the\n" +
-                                    "computer with sensors, so the worm can see and eat", TextToSpeech.QUEUE_FLUSH, null);
-                            break;
-                        case "so what is the program like":
-                            tts.speak("There is no program. What\n" +
-                                    "you see IS the worm. We did\n" +
-                                    "not write a program. The worm\n" +
-                                    "acts like his own brain tells\n" +
-                                    "him.", TextToSpeech.QUEUE_FLUSH, null);
-                            break;
-                        case "so the worm eats all the time":
-                            tts.speak("Only when he is hungry, we do\n" +
-                                    "not know before. We feed him\n" +
-                                    "with the balls, but he eats just\n" +
-                                    "when he likes.", TextToSpeech.QUEUE_FLUSH, null);
-                            break;
-                        case "that sounds scary":
-                            tts.speak("A worm consists of 302\n" +
-                                    "neurons", TextToSpeech.QUEUE_FLUSH, null);
-                            break;
-                        case "what about a mouse":
-                            tts.speak("A mouse consists of about 100 millions of Neurons", TextToSpeech.QUEUE_FLUSH, null);
-                            break;
-                        case "and what about a human brain":
-                            tts.speak("Our brain consists of about\n" +
-                                    "100 Billions of Neurons", TextToSpeech.QUEUE_FLUSH, null);
-                            break;
-                        case "so this would be too much for a computer":
-                            tts.speak("Are you sure?\n" +
-                                    "We started with Memory sizes\n" +
-                                    "of about 300 Bytes in the\n" +
-                                    "1960s\n" +
-                                    "Today – 100 Gigabytes is\n" +
-                                    "problem for you?", TextToSpeech.QUEUE_FLUSH, null);
-                            break;
-                        case "thank your professor for comming":
-                            tts.speak("i did not come personally. I am\n" +
-                                    "dead for one year now. But my\n" +
-                                    "students scaned my brain and\n" +
-                                    "transferred it into this\n" +
-                                    "computer.\n" +
-                                    "Now i can live forever!", TextToSpeech.QUEUE_FLUSH, null);
-                            break;
-                        default:
-                            tts.speak(result.get(0), TextToSpeech.QUEUE_FLUSH, null);
+                    for (int i = 0; i < patterns.length; i++){
+                        if (result.get(0).toLowerCase().matches(".*" + patterns[i] + ".*")){
+                            tts.speak(answers[i], TextToSpeech.QUEUE_FLUSH, null);
+                        }
                     }
+
                 }
                 break;
             }
@@ -207,33 +124,14 @@ public class MainActivity extends Activity {
         }
     }
 
-    /*private void listPairedDevices()
-    {
-        pairedDevices = btAdapter.getBondedDevices();
-        ArrayList list = new ArrayList();
-
-        if (pairedDevices.size()>0)
-        {
-            for(BluetoothDevice bt : pairedDevices)
-            {
-                list.add(bt.getName() + "\n" + bt.getAddress()); //Get the device's name and the address
-            }
-        }
-        else
-        {
-            Toast.makeText(getApplicationContext(), "No Paired Bluetooth Devices Found.", Toast.LENGTH_LONG).show();
-        }
-
-        final ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1, list);
-        lstPairedDevices.setAdapter(adapter);
-        lstPairedDevices.setOnItemClickListener(myListClickListener); //Method called when the device from the list is clicked
-    }
-
     private AdapterView.OnItemClickListener myListClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            device_name = ((TextView) view).getText().toString();
-            device_address = device_name.substring(device_name.length() - 17);
+            for (int i = 0; i < patterns.length; i++){
+                if (((TextView) view).getText().toString().toLowerCase().matches(".*" + patterns[i] + ".*")){
+                    tts.speak(answers[i], TextToSpeech.QUEUE_FLUSH, null);
+                }
+            }
         }
-    };*/
+    };
 }
